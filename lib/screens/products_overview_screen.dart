@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/screens/cart_screen.dart';
-import 'package:shopapp/screens/orders_screen.dart';
+//import 'package:shopapp/screens/orders_screen.dart';
 import 'package:shopapp/widgets/app_drawer.dart';
 import 'package:shopapp/widgets/badge.dart';
 import '../widgets/product_grid.dart';
@@ -23,6 +25,31 @@ class Productsoverviewscreen extends StatefulWidget {
 class _ProductsoverviewscreenState extends State<Productsoverviewscreen> {
   bool showFavoriteOnly = false;
   bool showOrders = false;
+  bool _isInit = true;
+  bool _isloading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isloading = true;
+      });
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+        print(_isloading);
+        setState(() {
+          _isloading = false;
+          print(_isloading);
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +58,7 @@ class _ProductsoverviewscreenState extends State<Productsoverviewscreen> {
     return Scaffold(
       drawer: AppDrawer(),
       appBar: AppBar(
-        title: Text('MyShop'),
+        title: Text('Shop'),
         actions: <Widget>[
           PopupMenuButton(
             onSelected: (FilterOptions selectedValue) {
@@ -67,13 +94,18 @@ class _ProductsoverviewscreenState extends State<Productsoverviewscreen> {
                 Icons.shopping_cart,
               ),
               onPressed: () {
+                print('hello');
                 Navigator.of(context).pushNamed(CartScreen.routeName);
               },
             ),
           )
         ],
       ),
-      body: ProductGrid(showFavoriteOnly),
+      body: _isloading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductGrid(showFavoriteOnly),
     );
   }
 }

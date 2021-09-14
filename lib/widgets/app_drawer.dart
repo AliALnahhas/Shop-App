@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopapp/screens/products_overview_screen.dart';
 import 'package:shopapp/screens/user_products_screen.dart';
 
 import '../screens/orders_screen.dart';
+import '../provider/auth.dart';
+import '../helpers/custem_route.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -14,7 +17,7 @@ class AppDrawer extends StatelessWidget {
           width: double.infinity,
           height: 70,
           child: Card(
-            color: Theme.of(context).primaryColor,
+            //color: Theme.of(context).primaryColor,
             elevation: 6,
             child: Padding(
               padding: EdgeInsets.only(top: 20, left: 5),
@@ -26,8 +29,8 @@ class AppDrawer extends StatelessWidget {
                     title,
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                      //color: Colors.white,
+                      //fontWeight: FontWeight.bold,
                     ),
                   ),
                   icon,
@@ -44,7 +47,7 @@ class AppDrawer extends StatelessWidget {
         child: Column(
           children: <Widget>[
             AppBar(
-              title: Text('Hello Friend !'),
+              title: Text('Manager'),
               automaticallyImplyLeading: false,
             ),
             drawers(
@@ -53,10 +56,15 @@ class AppDrawer extends StatelessWidget {
                 print('All');
                 Navigator.of(context)
                     .pushReplacementNamed(Productsoverviewscreen.routeName);
+                /*Navigator.of(context).pushReplacement(
+                  CustemRoute(
+                    builder: (ctx) => Productsoverviewscreen(),
+                  ),
+                );*/
               },
               Icon(
                 Icons.shop,
-                color: Colors.white,
+                color: Colors.black38,
               ),
             ),
             drawers(
@@ -65,10 +73,15 @@ class AppDrawer extends StatelessWidget {
                 print('only');
                 Navigator.of(context)
                     .pushReplacementNamed(OrdersScreen.routeName);
+                /*Navigator.of(context).pushReplacement(
+                  CustemRoute(
+                    builder: (ctx) => OrdersScreen(),
+                  ),
+                );*/
               },
               Icon(
                 Icons.shopping_cart,
-                color: Colors.white,
+                color: Colors.black38,
               ),
             ),
             drawers(
@@ -76,12 +89,29 @@ class AppDrawer extends StatelessWidget {
               () {
                 Navigator.of(context)
                     .pushReplacementNamed(UserProductsScreen.routeName);
+                /*Navigator.of(context).pushReplacement(
+                  CustemRoute(
+                    builder: (ctx) => UserProductsScreen(),
+                  ),
+                );*/
               },
               Icon(
                 Icons.edit,
-                color: Colors.white,
+                color: Colors.black38,
               ),
-            )
+            ),
+            drawers(
+              'Logout',
+              () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/');
+                Provider.of<Auth>(context, listen: false).logout();
+              },
+              Icon(
+                Icons.exit_to_app,
+                color: Colors.black38,
+              ),
+            ),
           ],
         ),
       ),

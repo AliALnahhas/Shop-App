@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopapp/screens/product_detail_screen.dart';
 import '../provider/product.dart';
+import '../provider/products.dart';
+import '../provider/auth.dart';
 import '../provider/cart.dart';
 
 class ProductItem extends StatelessWidget {
@@ -14,6 +16,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final selectProduct = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+    final auth = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -24,9 +27,13 @@ class ProductItem extends StatelessWidget {
               arguments: selectProduct.id,
             );
           },
-          child: Image.network(
-            selectProduct.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: selectProduct.id,
+            child: FadeInImage(
+              placeholder: AssetImage('assest/images/product-placeholder.png'),
+              image: NetworkImage(selectProduct.imageUrl),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         footer: GridTileBar(
@@ -39,7 +46,18 @@ class ProductItem extends StatelessWidget {
                     : Icons.favorite_border,
               ),
               onPressed: () {
-                selectProduct.toggleFavoriteState();
+                /*Provider.of<Products>(context, listen: false).updateProduct(
+                  selectProduct.id,
+                  Product(
+                    id: selectProduct.id,
+                    title: selectProduct.title,
+                    description: selectProduct.description,
+                    imageUrl: selectProduct.imageUrl,
+                    price: selectProduct.price,
+                    isFavorite: !selectProduct.isFavorite,
+                  ),
+                );*/
+                selectProduct.toggleFavoriteState(auth.token, auth.userId);
               },
               color: Theme.of(context).accentColor,
             ),
